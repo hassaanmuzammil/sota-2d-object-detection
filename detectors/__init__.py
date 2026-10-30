@@ -1,6 +1,6 @@
 from .base import Detections, Detector
 
-MODELS = ["yolo26l", "yolo26l-nms", "rtdetr-l", "frcnn"]
+MODELS = ["yolo26l", "yolo26l-nms", "rtdetr-l", "frcnn", "yoloworld-l", "retinanet"]
 
 
 def load_detector(name, **kwargs) -> Detector:
@@ -16,4 +16,10 @@ def load_detector(name, **kwargs) -> Detector:
     if name == "frcnn":
         from .frcnn import FasterRCNNDetector
         return FasterRCNNDetector(**kwargs)
+    if name == "yoloworld-l":
+        from .yoloworld import YOLOWorldDetector
+        return YOLOWorldDetector(**kwargs)
+    if name == "retinanet":
+        from .retinanet import RetinaNetDetector
+        return RetinaNetDetector(**kwargs)
     raise ValueError(f"unknown model {name!r}, choose from {MODELS}")

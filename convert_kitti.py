@@ -8,6 +8,7 @@ KITTI -> COCO mapping:
   Tram       -> dropped (no plausible car/person confusion)
 
 python convert_kitti.py [--n 1000] [--seed 0] [--viz 5]
+python convert_kitti.py --cyclist --viz 0 --out data/kitti/kitti_coco_cyclist.json   # also score Cyclist (id 2)
 """
 import argparse
 import json
@@ -28,7 +29,13 @@ def main():
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--viz", type=int, default=5, help="draw GT on this many images -> results/figs/kitti_gt_*.png")
     ap.add_argument("--out", default="data/kitti/kitti_coco.json")
+    ap.add_argument("--cyclist", action="store_true", help="score Cyclist as class 2 instead of ignoring it")
     args = ap.parse_args()
+    target, ignore, categories = dict(TARGET), dict(IGNORE), list(CATEGORIES)
+    if args.cyclist:
+        target["Cyclist"] = 2
+        ignore.pop("Cyclist")
+        categories.insert(1, {"id": 2, "name": "cyclist"})
 
     all_ids = sorted(p.stem for p in (ROOT / "label_2").glob("*.txt"))
     ids = sorted(random.Random(args.seed).sample(all_ids, args.n))
@@ -42,19 +49,19 @@ def main():
         for line in (ROOT / "label_2" / f"{stem}.txt").read_text().splitlines():
             f = line.split()
             cls = f[0]
-            if cls not in TARGET and cls not in IGNORE:
+            if cls not in target and cls not in ignore:
                 continue
             x1, y1, x2, y2 = map(float, f[4:8])
             counts[cls] = counts.get(cls, 0) + 1
             anns.append({
                 "id": len(anns) + 1, "image_id": img_id,
-                "category_id": TARGET.get(cls, IGNORE.get(cls)),
+                "category_id": target.get(cls, ignore.get(cls)),
                 "bbox": [x1, y1, x2 - x1, y2 - y1], "area": (x2 - x1) * (y2 - y1),
-                "iscrowd": int(cls not in TARGET),
+                "iscrowd": int(cls not in target),
                 "kitti_class": cls, "truncated": float(f[1]), "occluded": int(f[2]),
             })
 
-    Path(args.out).write_text(json.dumps({"images": images, "annotations": anns, "categories": CATEGORIES}))
+    Path(args.out).write_text(json.dumps({"images": images, "annotations": anns, "categories": categories}))
     print(f"{len(images)} images, {len(anns)} boxes -> {args.out}")
     print("per KITTI class:", dict(sorted(counts.items())))
 

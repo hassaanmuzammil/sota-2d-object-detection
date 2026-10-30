@@ -19,6 +19,9 @@ from detectors import MODELS, load_detector
 DATASETS = {
     "coco": ("data/coco/annotations/instances_val2017.json", "data/coco/val2017"),
     "kitti": ("data/kitti/kitti_coco.json", "data/kitti/training/image_2"),
+    "nuimages": ("data/nuimages/nuimages_coco.json", "data/nuimages"),
+    "nuscenes": ("data/nuscenes/nuscenes_coco.json", "data/nuscenes"),
+    "kitti-cyclist": ("data/kitti/kitti_coco_cyclist.json", "data/kitti/training/image_2"),
 }
 STAT_NAMES = ["AP", "AP50", "AP75", "AP_small", "AP_medium", "AP_large",
               "AR1", "AR10", "AR100", "AR_small", "AR_medium", "AR_large"]
@@ -42,6 +45,8 @@ def main():
     ap.add_argument("--limit", type=int, default=0, help="only the first N images (0 = all)")
     ap.add_argument("--imgsz", type=int, default=None, help="Ultralytics input size override (default 640)")
     ap.add_argument("--warmup", type=int, default=20, help="images excluded from timing")
+    ap.add_argument("--prompts", default=None,
+                    help="yoloworld-l only: comma-separated prompts; prompt i is scored as COCO class i+1 (default COCO-80)")
     ap.add_argument("--out", default="results")
     args = ap.parse_args()
 
@@ -50,11 +55,15 @@ def main():
     img_ids = sorted(coco_gt.getImgIds())
     if args.limit:
         img_ids = img_ids[: args.limit]
-    keep_cats = set(coco_gt.getCatIds())  # KITTI GT only has person/car -> drop all other predicted classes
+    keep_cats = set(coco_gt.getCatIds())  # KITTI/nuImages/nuScenes GT has a few classes -> drop all other predicted classes
 
     kwargs = {"imgsz": args.imgsz} if args.imgsz else {}
+    if args.prompts:
+        kwargs["prompts"] = args.prompts.split(",")
     det = load_detector(args.model, **kwargs)
-    tag = f"{det.name}{'_' + str(args.imgsz) if args.imgsz else ''}_{args.dataset}{'_n' + str(args.limit) if args.limit else ''}"
+    tag = (f"{det.name}{'_' + str(args.imgsz) if args.imgsz else ''}"
+           f"{'_p-' + args.prompts.replace(',', '-').replace(' ', '') if args.prompts else ''}"
+           f"_{args.dataset}{'_n' + str(args.limit) if args.limit else ''}")
 
     torch.cuda.reset_peak_memory_stats()
     preds, times = [], []
@@ -101,7 +110,8 @@ def main():
         "gpu_peak_mem_MB": peak_mem_mb,
         "env": {"gpu": torch.cuda.get_device_name(), "torch": torch.__version__, "python": platform.python_version()},
         "command": f"python eval.py --model {args.model} --dataset {args.dataset}"
-                   + (f" --limit {args.limit}" if args.limit else "") + (f" --imgsz {args.imgsz}" if args.imgsz else ""),
+                   + (f" --limit {args.limit}" if args.limit else "") + (f" --imgsz {args.imgsz}" if args.imgsz else "")
+                   + (f" --prompts {args.prompts}" if args.prompts else ""),
         "pred_file": str(pred_file),
     }
     (out_dir / f"{tag}.json").write_text(json.dumps(result, indent=2))
