@@ -98,7 +98,7 @@ python make_report_assets.py
 Code layout:
 - `detectors/`: one wrapper per model behind a common `predict(img) → boxes, scores, COCO ids` interface
 - `eval.py`: inference, scoring and timing
-- `notebooks/results_deepdive.ipynb`: all analyses, with outputs saved
+- `notebooks/level1_baseline.ipynb`: all analyses, with outputs saved
 
 Each run writes its settings and exact command into `results/<model>_<dataset>.json`. The full command log is in `logs/commands.md`, and the pinned environment is in `requirements-lock.txt`.
 

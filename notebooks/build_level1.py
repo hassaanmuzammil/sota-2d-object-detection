@@ -1,4 +1,4 @@
-"""Builds notebooks/results_deepdive.ipynb (run from repo root)."""
+"""Builds notebooks/level1_baseline.ipynb (run from repo root)."""
 import nbformat as nbf
 
 cells = []
@@ -494,5 +494,5 @@ md(r"""
 """)
 
 nb = nbf.v4.new_notebook(cells=cells, metadata={"kernelspec": {"name": "python3", "display_name": "Python 3 (cnn)", "language": "python"}})
-nbf.write(nb, "notebooks/results_deepdive.ipynb")
+nbf.write(nb, "notebooks/level1_baseline.ipynb")
 print(len(cells), "cells")

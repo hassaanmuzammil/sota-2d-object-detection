@@ -1,6 +1,6 @@
 # 2D Object Detection: 5 Detector Families × 4 Datasets (Extended Study)
 
-This extends the MVP report ([report.md](report.md)) with two more detector families (RetinaNet, YOLO-World) and two more driving datasets (nuImages, nuScenes). The full analysis, with outputs saved, is in `notebooks/results_extended.ipynb`.
+This extends the MVP report ([report_basic.md](report_basic.md)) with two more detector families (RetinaNet, YOLO-World) and two more driving datasets (nuImages, nuScenes). The full analysis, with outputs saved, is in `notebooks/level2_extended.ipynb`.
 
 ## 1. Goal
 

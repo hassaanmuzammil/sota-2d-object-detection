@@ -284,8 +284,8 @@ python eval.py --model yoloworld-l --dataset kitti-cyclist --prompts "pedestrian
 **6. Analyses and figures** (car + person re-score, visibility, day/night, duplicates, failure images)
 
 ```bash
-python notebooks/build_extended_notebook.py
-cd notebooks && jupyter nbconvert --to notebook --execute --inplace results_extended.ipynb
+python notebooks/build_level2.py
+cd notebooks && jupyter nbconvert --to notebook --execute --inplace level2_extended.ipynb
 ```
 
 ## 9. Technical analysis

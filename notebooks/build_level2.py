@@ -1,7 +1,7 @@
-"""Builds notebooks/results_extended.ipynb (5 detector families x 4 datasets). Run from repo root:
+"""Builds notebooks/level2_extended.ipynb (5 detector families x 4 datasets). Run from repo root:
 
-python notebooks/build_extended_notebook.py
-cd notebooks && jupyter nbconvert --to notebook --execute --inplace results_extended.ipynb
+python notebooks/build_level2.py
+cd notebooks && jupyter nbconvert --to notebook --execute --inplace level2_extended.ipynb
 """
 import nbformat as nbf
 
@@ -12,7 +12,7 @@ code = lambda s: cells.append(nbf.v4.new_code_cell(s.strip()))
 md(r"""
 # Extended Study — 5 Detector Families × 4 Datasets
 
-Extends the MVP (`results_deepdive.ipynb`, unchanged) with two more detector families and two more driving datasets. Every number below is loaded from `results/*.json`, produced by `eval.py`.
+Extends the MVP (`level1_baseline.ipynb`, unchanged) with two more detector families and two more driving datasets. Every number below is loaded from `results/*.json`, produced by `eval.py`.
 
 | Family | Model | Checkpoint |
 |---|---|---|
@@ -505,5 +505,5 @@ md(r"""
 """)
 
 nb = nbf.v4.new_notebook(cells=cells, metadata={"kernelspec": {"name": "python3", "display_name": "Python 3 (cnn)", "language": "python"}})
-nbf.write(nb, "notebooks/results_extended.ipynb")
+nbf.write(nb, "notebooks/level2_extended.ipynb")
 print(len(cells), "cells")
