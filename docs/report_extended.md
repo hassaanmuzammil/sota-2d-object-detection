@@ -72,7 +72,15 @@ Measure how COCO-pretrained detectors from five families generalize, with no ret
 
 These boxes cover the whole 3D object, including hidden parts, so they're **looser** than hand-drawn boxes.
 
-**KITTI cyclist variant** (`--cyclist`): same as KITTI, but Cyclist is scored as its own class. Used only for the open-vocabulary test (§9).
+**KITTI cyclist variant** (`--cyclist`, open-vocabulary test only, §9)
+
+| KITTI | Ground truth | Prediction used |
+|---|---|---|
+| Car | car | COCO car |
+| Pedestrian | person | COCO person |
+| Cyclist | cyclist (scored) | COCO bicycle (closed-set models); "cyclist" prompt (YOLO-World) |
+| Van, Truck, Misc, Person_sitting, DontCare | ignore | — |
+| Tram | dropped | — |
 
 ## 4. Preprocessing
 

@@ -223,8 +223,8 @@ for d in DS:
 """)
 code(r"""
 M = pd.DataFrame({DSN[d]: {n: 100 * res[(n, d)]["metrics"]["AP"] for n in NAMES} for d in DS})
-fig, ax = plt.subplots(figsize=(7, 3.8))
-im = ax.imshow(M.values, cmap="Blues", vmin=0, vmax=M.values.max())
+fig, ax = plt.subplots(figsize=(8, 3.8))
+im = ax.imshow(M.values, cmap="Blues", vmin=0, vmax=M.values.max(), aspect="auto")
 ax.set_xticks(range(M.shape[1]), M.columns); ax.set_yticks(range(M.shape[0]), M.index)
 for i in range(M.shape[0]):
     for j in range(M.shape[1]):
